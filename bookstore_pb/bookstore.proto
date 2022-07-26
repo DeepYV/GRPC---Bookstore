@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package bookstore;
+option go_package="/bookstore_pb";
+
+
+message book{
+  string bookId = 1;
+  string author = 2;
+  string bookname = 3;
+  string title = 4;
+}
+message updateBookRequest{
+  string author = 2;
+  string bookname = 3;
+  string title = 4;
+}
+message booksRequest{
+   book books = 1;
+}
+message id{
+  string bookid = 1;
+}
+message response{ 
+  string message = 1;
+}
+message pageInfoRequest{
+  string pagenumber = 1;
+  string bookid = 2;
+  string pagesize = 3;
+  string pagecontent = 4;
+}
+message pageRequest{
+  int64 pgagenumber = 1;
+  int64 pagesize = 2; 
+}
+message input{
+  oneof request{
+    string search = 1;
+    string bookid = 2;
+  }
+}
+message streamResponse{
+  oneof resp{
+    string errormsg = 1; 
+    book bookrResp = 2;
+  }
+}
+service Bookstore{
+  rpc CreateBook (booksRequest) returns (id) {};
+  rpc DeleteBook (id) returns (response) {};
+  rpc GetBook (id) returns ( book ) {};
+  rpc Upatebook(updateBookRequest) returns (response){};
+  rpc GetContent(pageRequest) returns(stream book);
+  rpc GetBookdetails(stream input) returns( stream streamResponse);
+}
